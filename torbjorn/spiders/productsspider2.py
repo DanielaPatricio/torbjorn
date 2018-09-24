@@ -16,11 +16,10 @@ class ProductsSpider2(scrapy.Spider):
         i = 1
         for link in links:
             abs_url = response.urljoin(link)
-            url_next = '//div[contains(@ class,"productCategoryContainer ")]['+str(i)+']/ul/li/a/@href'
-            categ = response.xpath(url_next).extract()
+            #url_next = '//div[contains(@ class,"productCategoryContainer ")]['+str(i)+']/ul/li/a/@href'
             if (i <= len(links)):
                 i = i + 1
-                yield scrapy.Request(abs_url, callback = self.parse_indetail, meta = {'category' : categ})
+                yield scrapy.Request(abs_url, callback = self.parse_indetail)
 
 
     def parse_indetail(self, response):
@@ -34,6 +33,6 @@ class ProductsSpider2(scrapy.Spider):
             item['size'] = sel.xpath('normalize-space(.//span[contains(@ class,"size")]/text())').extract()
             item['image'] = "https://www.ikea.com" + sel.xpath('.//img/@ src').extract_first()
             item['link'] = "https://www.ikea.com" + sel.xpath('.//a/@ href').extract_first()
-            item['category'] = response.request.url
+            item['category'] = response.xpath('//title/text()').extract()
             yield item
 
