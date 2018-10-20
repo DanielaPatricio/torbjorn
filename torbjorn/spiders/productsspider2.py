@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 import scrapy
 from torbjorn.products import IkeaProduct
-from scrapy.spiders import CrawlSpider, Rule
-from scrapy.linkextractors.lxmlhtml import LxmlLinkExtractor
-from scrapy.selector import Selector
-
 
 class ProductsSpider2(scrapy.Spider):
     name = 'productsspider2'
@@ -16,14 +12,14 @@ class ProductsSpider2(scrapy.Spider):
         i = 1
         for link in links:
             abs_url = response.urljoin(link)
-            #url_next = '//div[contains(@ class,"productCategoryContainer ")]['+str(i)+']/ul/li/a/@href'
             if (i <= len(links)):
                 i = i + 1
                 yield scrapy.Request(abs_url, callback = self.parse_indetail)
 
 
     def parse_indetail(self, response):
-        for sel in response.xpath('//div[contains(@ id,"item_")]'):
+        itemlinks = response.xpath('//div[contains(@ id,"item_")]')
+        for sel in itemlinks:
             item = IkeaProduct()
             item['itemid'] = str(sel.xpath('@id').extract()).split("_")[1]
             item['name'] = sel.xpath('.//span[contains(@ class,"productTitle ")]/text()').extract()
@@ -35,4 +31,3 @@ class ProductsSpider2(scrapy.Spider):
             item['link'] = "https://www.ikea.com" + sel.xpath('.//a/@ href').extract_first()
             item['category'] = response.xpath('//title/text()').extract()
             yield item
-

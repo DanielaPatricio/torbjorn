@@ -14,6 +14,8 @@ BOT_NAME = 'torbjorn'
 SPIDER_MODULES = ['torbjorn.spiders']
 NEWSPIDER_MODULE = 'torbjorn.spiders'
 FEED_EXPORT_ENCODING = 'utf-8'
+FEED_FORMAT = "json"
+FEED_URI = "/home/empress/Desktop/%(name)s-%(time)s.json"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'torbjorn (+http://www.yourdomain.com)'
